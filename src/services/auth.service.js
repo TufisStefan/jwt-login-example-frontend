@@ -1,4 +1,5 @@
 import axios from "axios"
+import jwtDecode from "jwt-decode";
 
 const API_URL = "http://localhost:8080/api/auth/"
 
@@ -15,11 +16,11 @@ const login = (username, password) => {
         username,
         password
     }).then((response) => {
-        console.log(response.data);
         if (response.data.token) {
+            const token = jwtDecode(response.data.token);
+            response.data.roles = Object.entries(token["Role"]).map(([, v]) => v.authority);
             localStorage.setItem("user", JSON.stringify(response.data))
         }
-        console.log(JSON.parse(localStorage.getItem("user")));
         return response.data;
     });
 };
