@@ -1,5 +1,6 @@
 
 import './App.css';
+import './Sidebar.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from 'react';
 import AuthService from './services/auth.service';
@@ -11,7 +12,8 @@ import Profile from './components/Profile';
 import BoardUser from './components/BoardUser';
 import BoardModerator from './components/BoardModerator';
 import BoardAdmin from './components/BoardAdmin';
-
+import * as React from 'react';
+import { slide as Menu } from 'react-burger-menu';
 
 function App() {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -35,40 +37,43 @@ function App() {
   return (
     <div className="App">
       <nav className="navbar navbar-xpand navbar-dark bg-dark">
+        <Menu noOverlay>
+          <div className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <Link to={"/home"} className="nav-link">
+                Home
+              </Link>
+            </li>
+
+            {showModeratorBoard && (
+              <li className="nav-item">
+                <Link to={"/mod"} className="nav-link">
+                  Moderator Board
+                </Link>
+              </li>
+            )}
+
+            {showAdminBoard && (
+              <li className="nav-item">
+                <Link to={"/admin"} className="nav-link">
+                  Admin Board
+                </Link>
+              </li>
+            )}
+
+            {currentUser && (
+              <li className="nav-item">
+                <Link to={"/user"} className="nav-link">
+                  User Board
+                </Link>
+              </li>
+            )}
+          </div>
+        </Menu>
         <Link to={"/"} className="navbar-brand">
-          bezKoder
+          LoginApp
         </Link>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
 
-          {showModeratorBoard && (
-            <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                Moderator Board
-              </Link>
-            </li>
-          )}
-
-          {showAdminBoard && (
-            <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
-              </Link>
-            </li>
-          )}
-
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
-              </Link>
-            </li>
-          )}
-        </div>
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
