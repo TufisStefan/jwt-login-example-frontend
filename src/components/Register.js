@@ -1,4 +1,3 @@
-import { formControlClasses } from "@mui/material";
 import { useRef, useState } from "react";
 import { isEmail } from "validator";
 
@@ -75,7 +74,7 @@ const Register = () => {
         setMessage("");
         setSuccessful(false);
 
-        formControlClasses.current.validateAll();
+        form.current.validateAll();
 
         if (checkBtn.current.context._errors.length === 0) {
             AuthService.register(username, email, password).then((response) => {
