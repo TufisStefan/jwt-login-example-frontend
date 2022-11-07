@@ -16,8 +16,8 @@ const getModeratorBoard = () => {
 }
 
 
-const getAdminBoard = () => {
-    return axiosService.get(API_URL + "admin");
+const getAdminBoard = (page, rowsPerPage) => {
+    return axiosService.get(API_URL + "admin", { params: { pageNumber: page, pageSize: rowsPerPage } });
 }
 
 const UserService = {
