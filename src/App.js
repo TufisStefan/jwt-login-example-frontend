@@ -11,7 +11,7 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import BoardUser from './components/BoardUser';
 import BoardModerator from './components/BoardModerator';
-import BoardAdmin from './components/BoardAdmin';
+import BoardAdmin from './components/Admin/BoardAdmin';
 import * as React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 
