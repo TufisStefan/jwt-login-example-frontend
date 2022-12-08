@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
 import eventBus from "../../common/EventBus";
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
+import MedicationIcon from '@mui/icons-material/Medication';
 import UserService from "../../services/user.service";
-import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from "@mui/material";
+import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import Paper from '@mui/material/Paper';
 import AlertDialog from "./AlertDialog";
+import { Link } from "react-router-dom";
 
 const BoardAdmin = () => {
     const [responseContent, setResponseContent] = useState("");
@@ -16,8 +15,6 @@ const BoardAdmin = () => {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [username, setUsername] = useState("");
-    const [editableUser, setEditableUser] = useState({});
-    const [editable, setEditable] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -42,31 +39,6 @@ const BoardAdmin = () => {
         setDialogOpen(false);
     };
 
-    const handleUpdate = async () => {
-        await UserService.updateUser(editableUser.id, editableUser).then((response) => {
-            getUsers();
-        }
-        );
-    }
-
-    const handleSave = () => {
-        setEditableUser({});
-        setEditable(false);
-        handleUpdate();
-    }
-
-    const handleChangeUsername = (e) => {
-        setEditableUser(editableUser => ({
-            ...editableUser,
-            username: e.target.value
-        }));
-    }
-    const handleChangeEmail = (e) => {
-        setEditableUser(editableUser => ({
-            ...editableUser,
-            email: e.target.value
-        }))
-    }
     const getUsers = () => {
         UserService.getAdminBoard(page, rowsPerPage).then((response) => {
             setResponseContent(response.data);
@@ -99,7 +71,9 @@ const BoardAdmin = () => {
             <Typography
                 variant="h4"
                 mb={2}
-            >Users</Typography>
+            >
+                Patients
+            </Typography>
             <TableContainer component={Paper}>
                 <Table className="table" aria-label="simple table">
                     <TableHead>
@@ -107,78 +81,41 @@ const BoardAdmin = () => {
                             <TableCell>ID</TableCell>
                             <TableCell>Username</TableCell>
                             <TableCell>Email</TableCell>
-                            <TableCell>Roles</TableCell>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {hasLoaded && responseContent.content.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell component="th" scope="row">
-                                    {row.id}
-                                </TableCell>
-                                <TableCell>
-                                    {(row.id === editableUser.id && editable) ? (
-                                        <TextField
-                                            variant="standard"
-                                            value={editableUser.username}
-                                            onChange={handleChangeUsername}
-
-                                        />
-                                    ) : (
-                                        row.username
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    {(row.id === editableUser.id && editable) ? (
-                                        <TextField
-                                            variant="standard"
-                                            value={editableUser.email}
-                                            onChange={handleChangeEmail}
-                                        />
-                                    ) : (
-                                        row.email
-                                    )}
-                                </TableCell>
-                                <TableCell>{row.roles.map(role => role.name).sort()[0]}</TableCell>
-                                <TableCell>
-                                    {(row.id === editableUser.id && editable) ? (
-                                        <Box
-                                            component="div"
-                                            sx={{ display: 'inline' }}>
+                        {hasLoaded && responseContent.content
+                            .map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell component="th" scope="row">
+                                        {row.id}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.username}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.email}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link to={`/prescription/${row.username}`}>
                                             <IconButton
-                                                aria-label="save"
-                                                onClick={() => { handleSave(); }}>
-                                                <CheckIcon />
+                                                aria-label="add-prescription"
+                                            >
+                                                <MedicationIcon />
                                             </IconButton>
-                                            <IconButton
-                                                aria-label="cancel"
-                                                onClick={() => {
-                                                    setEditableUser({
-                                                        username: ""
-                                                    }); setEditable(false);
-                                                }}>
-                                                <ClearIcon />
-                                            </IconButton>
-                                        </Box>
-                                    ) : (
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
                                         <IconButton
-                                            aria-label="edit"
-                                            onClick={() => { setEditableUser(row); setEditable(true) }}>
-                                            <EditIcon />
+                                            aria-label="delete"
+                                            onClick={() => { setUsername(row.username); handleOpenDialog(); }}>
+                                            <DeleteIcon />
                                         </IconButton>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <IconButton
-                                        aria-label="delete"
-                                        onClick={() => { setUsername(row.username); handleOpenDialog(); }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 55 * emptyRows }}>
                                 <TableCell colSpan={6} />
@@ -193,7 +130,6 @@ const BoardAdmin = () => {
                     handleDelete={handleDelete}
                     open={dialogOpen}
                 />
-
                 <TablePagination
                     rowsPerPageOptions={[5, 10]}
                     component="div"
@@ -206,7 +142,7 @@ const BoardAdmin = () => {
                     showLastButton={true}
                 />
             </TableContainer>
-        </Box>
+        </Box >
     );
 }
 

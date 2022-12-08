@@ -14,9 +14,9 @@ import BoardModerator from './components/BoardModerator';
 import BoardAdmin from './components/Admin/BoardAdmin';
 import * as React from 'react';
 import { slide as Menu } from 'react-burger-menu';
+import Prescription from './components/Prescription';
 
 function App() {
-  const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
@@ -25,7 +25,6 @@ function App() {
 
     if (user) {
       setCurrentUser(user);
-      setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
   }, []);
@@ -44,15 +43,6 @@ function App() {
                 Home
               </Link>
             </li>
-
-            {showModeratorBoard && (
-              <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-            )}
-
             {showAdminBoard && (
               <li className="nav-item">
                 <Link to={"/admin"} className="nav-link">
@@ -60,18 +50,10 @@ function App() {
                 </Link>
               </li>
             )}
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User Board
-                </Link>
-              </li>
-            )}
           </div>
         </Menu>
         <Link to={"/"} className="navbar-brand">
-          LoginApp
+          ElderAssist
         </Link>
 
 
@@ -114,7 +96,7 @@ function App() {
           <Route path='/user' element={<BoardUser />} />
           <Route path='/mod' element={<BoardModerator />} />
           <Route path='/admin' element={<BoardAdmin />} />
-
+          <Route path='/prescription/:username' element={<Prescription />} />
         </Routes>
 
       </div>
